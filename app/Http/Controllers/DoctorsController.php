@@ -6,7 +6,9 @@ use App\doctor;
 use App\profile;
 use App\room;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 
@@ -34,13 +36,13 @@ class DoctorsController extends Controller
             'surname' => 'required',
             'name' => 'required'
         ]);
-        File::makeDirectory('storage/images/', 0777, true, true);
+        File::makeDirectory('storage/images/'. Auth::id().'/', 0777, true, true);
 
         $item = $request->file('photo');
         $filename = time() . '.' . $item->getClientOriginalExtension();
-        $location = 'storage/images/' . $filename;
+        $location = 'storage/images/' . Auth::id().'/'. $filename;
         $request = $request->all();
-        $request['photo'] = 'images/' . $filename;
+        $request['photo'] = 'images/'. Auth::id().'/' . $filename;
 
         Image::make($item)->save($location);
 //        $request = $request->all();
@@ -61,13 +63,26 @@ class DoctorsController extends Controller
     }
     public function update(Request $request, doctor $doctor)
     {
-        Storage::disk('public')->delete($customer->photo);
+        Storage::disk('public')->delete($doctor->photo);
         $this->validate($request, [
             'surname' => 'required',
             'name' => 'required'
         ]);
 
-        $doctor->update($request->all());
+        File::makeDirectory('storage/images/'. Auth::id().'/' ,0777,true,true);
+        $update =$request->all();
+        $item = $request->file('photo');
+
+
+        if($item)
+        {
+            $filename = time() .'.'.$item->getClientOriginalExtension();
+            $location = 'storage/images/'. Auth::id().'/' ;
+            $update['photo'] ='images/'. Auth::id().'/'.$filename;
+            Image::make($item)->save($location.$filename);
+
+        }
+        $doctor->update($update);
 
         return redirect()->route('doctors.index');
     }
