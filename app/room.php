@@ -8,6 +8,10 @@ class room extends Model
 {
     protected $fillable = [
         'id',
-        'number_room'
+        'name_room'
     ];
+    public function doctor()
+    {
+        return $this->belongsTo('App\Doctors');
+    }
 }

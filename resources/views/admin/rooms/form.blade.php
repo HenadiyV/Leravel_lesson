@@ -17,7 +17,7 @@
                                 {{ method_field('PUT') }}
                             @endisset
                             <div class="row">
-                                @include('admin.fields.text', ['field' => 'number_room', 'name' => 'Number'])
+                                @include('admin.fields.text', ['field' => 'name_room', 'name' => 'Number'])
 
                             </div>
                             <input type="submit" value="save">

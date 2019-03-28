@@ -39,7 +39,9 @@ class PostsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {$this->validate($request, [
+    {
+        //dd($request);
+        $this->validate($request, [
         'slug' => 'required',
         'title' => 'required',
         'category_id' => 'required|integer'

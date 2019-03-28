@@ -8,12 +8,18 @@ class patient extends Model
 {
     //
     protected $fillable = [
-        'id',
-        'surname',
+
+//        'surname',
         'name',
-        'patronymic',
-        'photo',
+        'email',
         'id_doctor',
-        'id_room'
+        'doctor',
+        'profile',
+        'data',
+        'room',
+        'id_room',
+        'time',
+        'id_time'
+
     ];
 }

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\doctor;
 use App\patient;
+use App\schedule;
+use App\time_schedule;
 use Illuminate\Http\Request;
 
 class PatientsController extends Controller
@@ -12,12 +15,57 @@ class PatientsController extends Controller
      */
     public function index()
     {
-        $patients = patient::all();
+       // $patients = patient::all();'patients',
 
-        return view('admin.patients.index', compact('patients'));
+$doctors=doctor::all();
+        return view('admin.patients.index', compact('doctors'));
 
     }
+    public function singUP($doctor,$data,$time){
+//        $patien=patient::
+        dd($doctor);
+    }
+    public function myDate(){
+    for($i=0;$i<6;$i++){
+        $t1  = mktime(0, 0, 0, date("m")  , date("d")+$i, date("Y"));
+        $tp=date('l \ d \ m \ Y',  $t1);
+        $ts=date('l',$t1);
+        $dat1=array($ts,$tp);
+        $mydate=array($dat1);
+    }
 
+    return $mydate;
+}
+    public function show($id){
+       // $date = Carbon::now();
+        $mydate=array();
+        for($i=1;$i<=7;$i++){
+            $t1  = mktime(0, 0, 0, date("m")  , date("d")+$i, date("Y"));
+            $tp=date('d \ m \ Y',  $t1);
+            $ts=date('l',$t1);
+            $dat1=array($ts,$tp);
+            array_push($mydate,$dat1);
+        }
+
+        //dd($mydate);
+        $date = date('l\ d \ m');
+        $tomorrow1  = mktime(0, 0, 0, date("m")  , date("d")+1, date("Y"));
+        $tomorrow=date('l \ d \ m \ Y',  $tomorrow1);
+        $time=time_schedule::all()->toArray();
+        $time = array_combine(array_column($time, 'id'), array_column($time, 'time'));
+        $stop = array_reverse($time);
+
+       $schedule= schedule::where('id_doctor',$id)->first();// ->orwhere(function ($query){$query->where('monday','1')->where('tuesday','1')->where('wednesday','1')->where('thursday','1')->where('friday','1')->where('saturday','1')->where('sunday','1');})
+       // dd($schedule);
+        $doctors=doctor::where('id',$id)->first();
+        return view('admin.patients.singUpDoctors', compact('doctors','schedule','time','stop','mydate'));
+    }
+
+//public function doctorSchedule( $doctor)
+//{
+//
+//    return($schedule);
+//}
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */

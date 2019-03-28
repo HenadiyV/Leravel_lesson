@@ -20,8 +20,9 @@ class CreateDoctorsTable extends Migration
                 $table->string('name');
                 $table->string('patronymic');
                 $table->string('photo')->nullable();
-                $table->string('id_profile')->nullable();
-                $table->string('id_room')->nullable();
+                $table->integer('id_profile');
+                $table->integer('id_room')->nullable();
+                $table->integer('id_schedule')->nullable();
                 $table->timestamps();
 
         });

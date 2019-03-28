@@ -1,4 +1,4 @@
-@extends('event')
+@extends('admin.calendar.event')
 
 {{--@extends('layout')--}}
 @section('style')

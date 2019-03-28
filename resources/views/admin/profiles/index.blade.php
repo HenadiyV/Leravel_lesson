@@ -9,14 +9,14 @@
 
             <div class="col-md-8 ">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Posts</div>
+                    <div class="panel-heading">Profiles</div>
                     <div class="panel-body">
                         @if($profiles->count() > 0)
                             <table class="table">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Actions</th>
+                                    <th>Название профиля</th>
+                                    <th>Действие</th>
                                 </tr>
                                 @foreach($profiles as $profile)
                                     <tr>
@@ -42,7 +42,7 @@
 
             </div>
             <div class="col-md-2">
-                <a type="button" class="btn btn-block btn-success btn-lg" href="{{route('profiles.create')}}">Success</a>
+                <a type="button" class="btn btn-block btn-success btn-lg" href="{{route('profiles.create')}}">Добавить</a>
             </div>
         </div>
     </div>

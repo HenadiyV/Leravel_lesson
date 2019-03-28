@@ -15,13 +15,13 @@
                             <table class="table">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Actions</th>
+                                    <th>Номер кабинета</th>
+                                    <th>Действие</th>
                                 </tr>
                                 @foreach($rooms as $room)
                                     <tr>
                                         <td>{{ $room->id }}</td>
-                                        <td>{{ $room->number_room }}</td>
+                                        <td>{{ $room->name_room }}</td>
 
                                         <td>
                                             <form action="{{ route('rooms.destroy', $room->id) }}" method="POST">

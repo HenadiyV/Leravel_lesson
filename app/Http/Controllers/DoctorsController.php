@@ -17,9 +17,9 @@ class DoctorsController extends Controller
     public function index()
     {
         $doctors = doctor::all();
-//        $profiles = profile::all();
-//        $rooms=room::all();
-        return view('admin.doctors.index', compact('doctors'));
+       $profiles = profile::all();
+       $rooms=room::all();
+        return view('admin.doctors.index', compact('doctors','profile','rooms'));
 
     }
     public function create()
@@ -35,16 +35,23 @@ class DoctorsController extends Controller
         $this->validate($request, [
             'surname' => 'required',
             'name' => 'required'
+
         ]);
+       // dd($request['photo']);
+        if(($request['photo'])!=null){
         File::makeDirectory('storage/images/'. Auth::id().'/', 0777, true, true);
 
         $item = $request->file('photo');
+
         $filename = time() . '.' . $item->getClientOriginalExtension();
         $location = 'storage/images/' . Auth::id().'/'. $filename;
         $request = $request->all();
         $request['photo'] = 'images/'. Auth::id().'/' . $filename;
 
-        Image::make($item)->save($location);
+        Image::make($item)->save($location);}
+        else{
+            $request = $request->all();
+        }
 //        $request = $request->all();
 //        $request['photo'] = $location;
         doctor::create($request);

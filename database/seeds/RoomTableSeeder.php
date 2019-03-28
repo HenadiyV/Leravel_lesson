@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RoomTableSeeder extends Seeder
 {
@@ -12,26 +13,26 @@ class RoomTableSeeder extends Seeder
     public function run()
     {
         $data = [
-            ['number_room'=>'11'],
-            ['number_room'=>'12'],
-            ['number_room'=>'13'],
-            ['number_room'=>'14'],
-            ['number_room'=>'15'],
-            ['number_room'=>'21'],
-            ['number_room'=>'22'],
-            ['number_room'=>'23'],
-            ['number_room'=>'24'],
-            ['number_room'=>'25'],
-            ['number_room'=>'31'],
-            ['number_room'=>'32'],
-            ['number_room'=>'33'],
-            ['number_room'=>'34'],
-            ['number_room'=>'35'],
-            ['number_room'=>'41'],
-            ['number_room'=>'42'],
-            ['number_room'=>'43'],
-            ['number_room'=>'44'],
-            ['number_room'=>'45']
+            ['name_room'=>'11'],
+            ['name_room'=>'12'],
+            ['name_room'=>'13'],
+            ['name_room'=>'14'],
+            ['name_room'=>'15'],
+            ['name_room'=>'21'],
+            ['name_room'=>'22'],
+            ['name_room'=>'23'],
+            ['name_room'=>'24'],
+            ['name_room'=>'25'],
+            ['name_room'=>'31'],
+            ['name_room'=>'32'],
+            ['name_room'=>'33'],
+            ['name_room'=>'34'],
+            ['name_room'=>'35'],
+            ['name_room'=>'41'],
+            ['name_room'=>'42'],
+            ['name_room'=>'43'],
+            ['name_room'=>'44'],
+            ['name_room'=>'45']
         ];
         DB::table('rooms')->insert($data);
 

@@ -10,4 +10,8 @@ class profile extends Model
         'id',
        'name'
     ];
+    public function doctor()
+    {
+        return $this->belongsTo('App\Doctors');
+    }
 }
