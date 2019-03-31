@@ -177,7 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
 
-        Laravelrus\LocalizedCarbon\LocalizedCarbonServiceProvider,
+//        Laravelrus\LocalizedCarbon\LocalizedCarbonServiceProvider,
     ],
 
     /*

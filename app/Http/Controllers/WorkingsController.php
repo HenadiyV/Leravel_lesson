@@ -30,9 +30,7 @@ class WorkingsController extends Controller
     {
         $this->validate($request, [
             'surname'=> 'required',
-//            'id_room'=> 'required',
-//            'id_schedule'=> 'required',
-//            'status'=> 'required'
+
         ]);
 
         working::create($request->all());
@@ -48,9 +46,7 @@ class WorkingsController extends Controller
     {
         $this->validate($request, [
             'surname'=> 'required',
-//            'id_room'=> 'required',
-//            'id_schedule'=> 'required',
-//            'status'=> 'required'
+
         ]);
         $working->update($request->all());
 
@@ -63,244 +59,297 @@ class WorkingsController extends Controller
     }
     public function show($id){
 
-//        CarbonInterval::setLocale('ru');
-//           $date1 = Carbon::now()->formatLocalized('%A %d %m %Y');//'l )
-$date1=Carbon::now()->format('l');
-            //dd($date);
-            $mydate=array();
-            for($i=0;$i<7;$i++){
-               $t1  = mktime(0, 0, 0, date("m")  , date("d")+$i, date("Y"));
-//                $tp=date('d m Y',  $t1);
-                $tp=Carbon::now()->addDay($i)->format('d-m-Y');
-               $ts=date('l',$t1);
-                $dat1=array($ts,$tp);
-                array_push($mydate,$dat1);
-            }
-//print_r($mydate);
-            //die;
-            //dd($mydate);
-           // $data = date('l\ d \ m');
-//            $tomorrow1  = mktime(0,0,0, date('m'),date('d')+1, date('Y'));
-//            $tomorrow=date('l \ d \ m \ Y', $tomorrow1);
+
         ////////////////////////
            $time=time_schedule::all()->toArray();
             $time = array_combine(array_column($time, 'id'), array_column($time, 'time'));
-            $stop = array_reverse($time);
+         //   $stop = array_reverse($time);
 
 ////////////////////////////
             $schedule= schedule::where('id_doctor',$id)->first();//
-       // dd($schedule);
-        $work=patient::where('id_doctor',$id)->get();
-        //dd($work);
 
-//        $monday=array();
-//        $tuesday=array();
-//            $wednesday=array();
-//                $thursday=array();
-//                    $friday=array();
-//                        $saturday=array();
-//                            $sunday=array();
-        $temp_patient=array();
-        foreach($work as $wr){
-            $dt=Carbon::parse($wr['data'])->format('d-m-Y');;
-            $aa=Carbon::parse($dt)->format('l');
+        $mydate=array();
+       $monday=array();
+       $tuesday=array();
+       $wednesday=array();
+       $thursday=array();
+       $friday=array();
+       $saturday=array();
+       $sunday=array();
+        $new_data=Carbon::now()->format('d-m-Y');
+        $temp_patient=array();//foreach($work as $wr)
+        for($j=0;$j<7;$j++) {
+            $dt = Carbon::now()->addDay($j)->format('d-m-Y');//parse($wr['data'])->format('d-m-Y');
+            $p_dt = Carbon::now()->addDay($j)->format('Y-m-d');
+            // dd($p_dt);
 
-//if($aa=='Monday'){
-//    for($i=$schedule->id_startMonday;$i<$schedule->id_stopMonday;$i++){
-//    $id_time=$wr->id_time;
-//    }
-//}
-//if($aa=='Tuesday'){}
-//if($aa=='Wednesday'){}
-//if($aa=='Thursday'){}
-//if($aa=='Friday'){}
-//if($aa=='Saturday'){}
-//if($aa=='Sunday'){}
-           // dd($aa);
-            $t=$wr['id_time'];
-           $temp1=array($aa,$dt,$t);
-           array_push($temp_patient,$temp1);
+            $aa = Carbon::parse($dt)->format('l');
+            $bb = Carbon::parse($dt)->formatLocalized('%A');
+//dd($work);
+            $t_date = array($bb, $aa, $dt);
+            array_push($mydate, $t_date);
+
+            if($aa == 'Monday') {
+
+                $temp_monday = array();
+                $work_mo = patient::where('id_doctor', $id)->where('data', $p_dt)->get();
+
+                if(count($work_mo) > 0) {
+                    foreach($work_mo as $wr) {
+                        $p_id_time = $wr->id_time;
+                        $p_time = $wr->time;
+                        $p_temp = array($p_id_time, $p_time);
+                        array_push($temp_monday, $p_temp);
+
+                    }
+                }
+
+                for($i = $schedule->id_startMonday; $i < $schedule->id_stopMonday; $i++) {
+                    $result = true;
+                    if(count($temp_monday) > 0) {
+                        foreach($temp_monday as $t_s) {
+                            if($t_s[0] == $i) {
+                                $result = false;
+                                break;
+                            }
+                        }
+                    }
+                    if($result) {
+                        $id_time_mo = $i;
+
+                        $temp_time_mo = $time[$i];
+
+                        $t_mo = array($id_time_mo, $temp_time_mo);
+                        array_push($monday, $t_mo);
+                    }
+                }
+
+            }
+
+            if($aa == 'Tuesday') {
+                // dd($aa);
+                $temp_tuesday = array();
+                $work_tu = patient::where('id_doctor', $id)->where('data', $p_dt)->get();
+
+                if(count($work_tu) > 0) {
+                    foreach($work_tu as $wr) {
+                        $p_id_time = $wr->id_time;
+                        $p_time = $wr->time;
+                        $p_temp = array($p_id_time, $p_time);
+                        array_push($temp_tuesday, $p_temp);
+
+                    }
+                }
+                for($i = $schedule->id_startTuesday; $i < $schedule->id_stopTuesday; $i++) {
+                    $result = true;
+                    if(count($temp_tuesday) > 0) {
+                        foreach($temp_tuesday as $t_s) {
+                            if($t_s[0] == $i) {
+                                $result = false;
+                                break;
+                            }
+                        }
+                    }
+                    if($result) {
+                        $id_time_tu = $i;
+
+                        $temp_time_tu = $time[$i];
+
+                        $t_tu = array($id_time_tu, $temp_time_tu);
+                        array_push($tuesday, $t_tu);
+                    }
+                }
+            }
+            if($aa == 'Wednesday') {
+
+                $temp_wednesday = array();
+                $work_we = patient::where('id_doctor', $id)->where('data', $p_dt)->get();
+
+                if(count($work_we) > 0) {
+                    foreach($work_we as $wr) {
+                        $p_id_time = $wr->id_time;
+                        $p_time = $wr->time;
+                        $p_temp = array($p_id_time, $p_time);
+                        array_push($temp_wednesday, $p_temp);
+
+                    }
+                }
+                for($i = $schedule->id_startWednesday; $i < $schedule->id_stopWednesday; $i++) {
+                    $result = true;
+                    if(count($temp_wednesday) > 0) {
+                        foreach($temp_wednesday as $t_s) {
+                            if($t_s[0] == $i) {
+                                $result = false;
+                                break;
+                            }
+                        }
+                    }
+                    if($result) {
+                        $id_time_we = $i;
+
+                        $temp_time_we = $time[$i];
+
+                        $t_we = array($id_time_we, $temp_time_we);
+                        array_push($wednesday, $t_we);
+                    }
+                }
+            }
+            if($aa == 'Thursday') {
+                $work_th = patient::where('id_doctor', $id)->where('data', $p_dt)->get();
+                $temp_thursday = array();
+                if(count($work_th) > 0) {
+                    foreach($work_th as $wr) {
+                        $p_id_time = $wr->id_time;
+                        $p_time = $wr->time;
+                        $p_temp = array($p_id_time, $p_time);
+                        array_push($temp_thursday, $p_temp);
+
+                    }
+                }
+                for($i = $schedule->id_startThursday; $i < $schedule->id_stopThursday; $i++) {
+                    $result = true;
+                    if(count($temp_thursday) > 0) {
+                        foreach($temp_thursday as $t_s) {
+                            if($t_s[0] == $i) {
+                                $result = false;
+                                break;
+                            }
+                        }
+                    }
+                    if($result) {
+                        $id_time_th = $i;
+
+                        $temp_time_th = $time[$i];
+
+                        $t_th = array($id_time_th, $temp_time_th);
+                        array_push($thursday, $t_th);
+                    }
+                }
+            }
+            if($aa == 'Friday') {
+                $work_fr = patient::where('id_doctor', $id)->where('data', $p_dt)->get();
+                $temp_friday = array();
+                if(count($work_fr) > 0) {
+                    foreach($work_fr as $wr) {
+                        $p_id_time = $wr->id_time;
+                        $p_time = $wr->time;
+                        $p_temp = array($p_id_time, $p_time);
+                        array_push($temp_friday, $p_temp);
+                    }
+                }
+                for($i = $schedule->id_startFriday; $i < $schedule->id_stopFriday; $i++) {
+                    $result = true;
+                    if(count($temp_friday) > 0) {
+                        foreach($temp_friday as $t_s) {
+                            if($t_s[0] == $i) {
+                                $result = false;
+                                break;
+                            }
+                        }
+                    }
+                    if($result) {
+                        $id_time_fr = $i;
+
+                        $temp_time_fr = $time[$i];
+
+                        $t_fr = array($id_time_fr, $temp_time_fr);
+                        array_push($friday, $t_fr);
+                    }
+
+
+                }
+            }
+            if($aa == 'Saturday') {
+                $work_sa = patient::where('id_doctor', $id)->where('data', $p_dt)->get();
+
+                $temp_saturday = array();
+                if(count($work_sa) > 0) {
+
+                    foreach($work_sa as $wr) {
+                        $p_id_time = $wr->id_time;
+                        $p_time = $wr->time;
+                        $p_temp = array($p_id_time, $p_time);
+                        array_push($temp_saturday, $p_temp);
+
+                    }
+                }
+
+                for($i = $schedule->id_startSaturday; $i < $schedule->id_stopSaturday; $i++) {
+                    $result = true;
+                    if(count($temp_saturday) > 0) {
+                        foreach($temp_saturday as $t_s) {
+                            if($t_s[0] == $i) {
+
+
+                                $result = false;
+                                break;
+                            }
+                        }
+                    }
+                    if($result) {
+                        $id_time_sa = $i;
+
+                        $temp_time_sa = $time[$i];
+
+                        $t_sa = array($id_time_sa, $temp_time_sa);
+                        array_push($saturday, $t_sa);
+                    }
+
+                }
+            }
+            if($aa == 'Sunday') {
+                $work_su = patient::where('id_doctor', $id)->where('data', $p_dt)->get();
+                $temp_sunday = array();
+                if(count($work_su) > 0) {
+
+                    foreach($work_su as $wr) {
+                        $p_id_time = $wr->id_time;
+                        $p_time = $wr->time;
+                        $p_temp = array($p_id_time, $p_time);
+                        array_push($temp_sunday, $p_temp);
+
+                    }
+                }
+                for($i = $schedule->id_startSunday; $i <= $schedule->id_stopSunday; $i++) {
+                    $result = true;
+                    if(count($temp_sunday) > 0) {
+                        foreach($temp_sunday as $t_s) {
+                            if($t_s[0] == $i) {
+                                $result = false;
+
+                                break;
+                            }
+                        }
+                    }
+                    if($result) {
+                        $id_time_su = $i;
+
+                        $temp_time_su = $time[$i];
+
+                        $t_su = array($id_time_su, $temp_time_su);
+                        array_push($sunday, $t_su);
+                    }
+
+                }
+            }
         }
-        //dd($temp);
-       // $temp_patient =array();
-//foreach($mydate as $md)
-//{
-//
-//   // dd($md); //0 => "Thursday"  1 => "28-03-2019"
-//    foreach($temp as $tm)
-//    {
-//       // dd($tm[0]); //0 => "2019-03-31"  1 => 2
-//
-//
-//
-//        if($md[1]==$tm[1]){
-//            dd($md[0]);
-//            $temData=Carbon::parse($tm[0])->format('d-m-Y');
-//            $t_patient=array($md[0],$temData,$tm[1]);
-//            array_push($temp_patient,$t_patient);
-//        }
-//
-//    }
-//}
-//dd($temp_patient);
-//        0 => array:3 [▼
-//    0 => "Tuesday"
-//    1 => "2019-03-31"
-//    2 => 2
-//  ]
+                    $doctors = doctor::where('id', $id)->first();
 
-
-
-
-//        $time = '2015-01-01';
-//        $dnum = date("w",strtotime($time));
-//        $textday = $day[$dnum];
-//        echo $textday;
-
-//        for($j=0;$j<1;$j++)
-//        {
-//            $tp=Carbon::now()->addDay($j)->format('l');
-//            $dt=Carbon::now()->addDay($j)->format('d-m-Y');
-//            if($tp==$schedule->mon){$mon=$dt;
-//        $monday=array($dt,$tp);
-//
-//        if($schedule->monday=='рабочий'){
-//
-//        for($i=$schedule->id_startMonday;$i<$schedule->id_stopMonday;$i++)
-//        {
-//            $id_t=$i;
-//            $tim=$time[$i];
-//            $id_time=array($id_t,$tim);
-//            array_push($monday,$id_time);
-//        }
-//        }
-//        }
-//
-//        $tuesday=array();
-//
-//            if($schedule->tuesday=='рабочий') {
-//                for($i = $schedule->id_startTuesday; $i < $schedule->id_stopTuesday; $i++) {
-//                    $id_t = $i;
-//                    $tim = $time[$i];
-//                    $id_time = array($id_t, $tim);
-//                    array_push($tuesday, $id_time);
-//                }
-//            }
-//            //dd($schedule->wednes);
-//            if($tp==$schedule->wednes) {
-//                $wed = $dt;
-//                $wednesday = array($dt,$tp);
-//                if($schedule->wednesday == 'рабочий') {
-//                    for($i = $schedule->id_startWednesday; $i < $schedule->id_stopWednesday; $i++) {
-//                        $id_t = $i;
-//                        $tim = $time[$i];
-//                        $id_time = array($id_t, $tim);
-//                        array_push($wednesday, $id_time);
-//                    }
-//                }
-//            }
-//            dd($wednesday);
-//            $thursday=array();
-//            if($schedule->thursday=='рабочий') {
-//                for($i = $schedule->id_starThursday; $i < $schedule->id_stopThursday; $i++) {
-//                    $id_t = $i;
-//
-//                    $tim = $time[$i];
-//                    $id_time = array($id_t, $tim);
-//                    array_push($thursday, $id_time);
-//                }
-//            }
-//            $friday=array();
-//
-//            if($schedule->friday=='рабочий') {
-//                for($i = $schedule->id_startFriday; $i < $schedule->id_stopFriday; $i++) {
-//                    $id_t = $i;
-//                    $tim = $time[$i];
-//                    $id_time = array($id_t, $tim);
-//                    array_push($friday, $id_time);
-//                }
-//            }
-//            $saturday=array();
-//            if($schedule->saturday=='рабочий') {
-//                for($i=$schedule->id_starSaturday;$i<$schedule->id_stopSaturday;$i++)
-//                {
-//                    $id_t=$i;
-//                    $tim=$time[$i];
-//                    $id_time=array($id_t,$tim);
-//                    array_push($saturday,$id_time);
-//                }
-//            }
-//        $sunday=array();
-//        if($schedule->sunday=='рабочий') {
-//            for($i = $schedule->id_starSunday; $i < $schedule->id_stopSunday; $i++) {
-//                $id_t = $i;
-//                $tim = $time[$i];
-//                $id_time = array($id_t, $tim);
-//                array_push($sunday, $id_time);
-//            }
-//        }
-//        }
-            // dd($schedule);
-            $doctors=doctor::where('id',$id)->first();
-           // dd($doctors);
-
-         //  $patient1=patient::where('id_doctor',$id)->first();
-
-//           if($patient1!=null){
-//           $patient=new patient();
-//
-//        $patient->id_room=$patient1->id_room;
-//        $patient->id_time=$patient1->id_time;
-//        $patient->room=$patient1->room;
-//        $patient->time=$patient1->time;
-//        $patient->data= Carbon::parse($patient1->data)->format('d-m-Y');
-//        $patient->id_doctor=$patient1->id_doctor;
-//        $patient->profile=$patient1->profile;
-//           }
-//        '',
-//        'time',
-//'id_time',
-//        'data',
-
-//$working=new working();
-//$working->id_doctor=$id;
-//$working->monday=$monday;
-//$working->tuesday=$tuesday;
-//$working->wednesday=$wednesday;
-//$working->thursday=$thursday;
-//$working->friday=$friday;
-//$working->saturday=$saturday;
-//$working->sunday=$sunday;
-   // dd($patient);
-            return view('workings.singUpDoctor', compact('doctors','schedule','time','stop','mydate','temp_patient','date1'));
-        }
+                    return view('workings.singUpDoctor', compact('doctors', 'schedule', 'mydate', 'monday','tuesday','wednesday','thursday','friday','saturday','sunday'));
+                }
     public function singUP(Request $request){
-//        $patien=patient::
-      //dd($request);// приходит время дата id_time id_schedule
+
+
         $time1=$request['id_time'];
         $time2=$request['time'];
-        //$time=new time_schedule();
         $time =array($time1,$time2) ;
-        //dd($time);
-       // $data=strtotime($request['data']);
-      /////////  $data=Carbon::parse($request['data'])->format('Y-m-d ');
-      ///////// dd($data);
         $data=$request['data'];
         $profile=doctor::where('id',$request['schedule'])->first();
         $schedule=schedule::where('id',$request['schedule'])->first();
-//dd($profile);
+
         return view('workings.singUpPatient ', compact('schedule','time','data','profile'));
     }
     public function save(Request $request){
-//        $doc=$request['doctor']['id_doctor'];
-      // dd($request->all());strtotime->format('d-m-Y')
-//$str=();
-//        preg_match_all('  ', $request->item,' ');
-     //  print_r($request);
-       // die;
-//$t=date('Y-m-d', strtotime($request->item));
-//dd($request);
-
         $patient = new patient();
         $patient->name=Auth::user()->name;
         $patient->email=Auth::user()->email;
@@ -312,45 +361,10 @@ $date1=Carbon::now()->format('l');
          $patient->data= Carbon::parse($request->data)->format('Y-m-d ');
          $patient->id_doctor=$request->id_doctor;
         $patient->profile=$request->profile;
-        //$patient->data=date('Y m d', strtotime($request->item));
-     $patient->save();
-      // dd($patient);
-   //$patient = new patient();// создаем модель
-//    $patient->bd =// поля модели
-//
-//        $patient->save();// сохранение
-        // Auth::id(); // данный пользователь
 
-//        $mydate=array();
-//        for($i=1;$i<=7;$i++){
-//            $t1  = mktime(0, 0, 0, date("m")  , date("d")+$i, date("Y"));
-//            $tp=date('d \ m \ Y',  $t1);
-//            $ts=date('l',$t1);
-//            $dat1=array($ts,$tp);
-//            array_push($mydate,$dat1);
-//        }
-//
-//        //dd($mydate);
-//        $date = date('l\ d \ m');
-//        $tomorrow1  = mktime(0, 0, 0, date("m")  , date("d")+1, date("Y"));
-//        $tomorrow=date('l \ d \ m \ Y',  $tomorrow1);
-//        $time=time_schedule::all()->toArray();
-//        $time = array_combine(array_column($time, 'id'), array_column($time, 'time'));
-//        $stop = array_reverse($time);
-//
-//        $schedule= schedule::where('id_doctor',$id)->first();
+     $patient->save();
         $doctors=doctor::all();
         return view('workings.index', compact('doctors'));
 
     }
-
 }
-
-//'surname',
-//        'name',
-//        'patronymic',
-//        'phone',
-//        'doctor',
-//        'data',
-//        'id_room',
-//        'id_time'
